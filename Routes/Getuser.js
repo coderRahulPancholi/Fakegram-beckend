@@ -42,7 +42,7 @@ router.post("/deletemyaccount", Authuser, async (req, res) => {
 });
 
 router.get("/data", Authuser, async (req, res) => {
-  res.json({success:true,user:req.user});
+  res.json({success:true,user:req.user}).setHeader("Access-Control-Allow-Origin","*");
 });
 
 router.get("/allusers/q=:query", Authuser, async(req,res)=>{
@@ -55,7 +55,7 @@ router.get("/allusers/q=:query", Authuser, async(req,res)=>{
       .toLowerCase()
       .includes(req.params.query.toLowerCase());
   })
-    res.json({users:filtered})
+    res.json({users:filtered}).setHeader("Access-Control-Allow-Origin","*")
   } catch (error) {
     res.json("error")
   }
