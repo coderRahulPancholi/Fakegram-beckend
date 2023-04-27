@@ -17,7 +17,7 @@ router.post("/createpost", Authuser, async (req, res) => {
 
     await user.save();
 
-    res.json(post).setHeader("Access-Control-Allow-Origin","*");
+    res.json(post).header("Access-Control-Allow-Origin","*");
   } catch {
     res.json("error");
   }
@@ -29,7 +29,7 @@ router.get("/posts", Authuser, async (req, res) => {
     if (!posts) {
       res.status(404).json("no postes added");
     } else {
-      res.json({posts}).setHeader("Access-Control-Allow-Origin","*");
+      res.json({posts}).header("Access-Control-Allow-Origin","*");
     }
   } catch (error) {
     res.status(504).json(error);
@@ -51,7 +51,7 @@ router.post("/like/:postid", Authuser, async (req, res) => {
       } else {
         tobelike.likes.push(req.user._id);
         await tobelike.save();
-        res.json("Liked").setHeader("Access-Control-Allow-Origin","*");
+        res.json("Liked").header("Access-Control-Allow-Origin","*");
       }
     }
   } catch (error) {
@@ -76,7 +76,7 @@ router.delete("/delete/post/:id", Authuser, async (req, res) => {
           user.posts.splice(index, 1);
           await user.save();
         }
-        res.json("post dlted").setHeader("Access-Control-Allow-Origin","*");
+        res.json("post dlted").header("Access-Control-Allow-Origin","*");
       } else {
         res.json("not allowed");
       }
@@ -100,7 +100,7 @@ router.get("/following/posts", Authuser, async(req,res)=>{
     return new Date(b.postedon) - new Date(a.postedon);
   })
    
-res.json({letestposts}).setHeader("Access-Control-Allow-Origin","*")
+res.json({letestposts}).header("Access-Control-Allow-Origin","*")
     
 
   } catch (error) {
