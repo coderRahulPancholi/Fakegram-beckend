@@ -17,8 +17,8 @@ require("./DB/MongoDb")
 
 app.use(express.json());
 app.use(cors({
-   credentials:true,
-   origin:"https://fakegram-beckend.vercel.app",
+  credentials:true,
+  origin:"http://localhost:3000"
 }))
 app.use(cookieParser())
 

@@ -21,6 +21,8 @@ router.post("/register", async (req, res) => {
       .cookie("token", token, {
         expires: new Date(Date.now() + 24657987654687),
         httpOnly: true,
+        secure:true,
+        sameSite:"none"
       })
       .json({ sucess: true });
     }
@@ -48,8 +50,8 @@ router.post("/login", async (req, res) => {
           .cookie("token", token, {
             expires: new Date(Date.now() + 24657987654687),
             httpOnly: true,
-            // secure:true,
-            // sameSite:"none"
+            secure:true,
+            sameSite:"none"
           })
           .json({ sucess: true,user:isexist });
       }
