@@ -70,12 +70,12 @@ router.post("/login", async (req, res) => {
 });
 
 
-router.post("/logout", async(req,res)=>{
+router.get("/logout", async(req,res)=>{
     try{
         res.cookie("token",null,{
           expires:new Date(Date.now() ),
-          // secure:true,
-          // sameSite:"none"
+          secure:true,
+          sameSite:"none"
         }).json("logged out")
 
     }catch{

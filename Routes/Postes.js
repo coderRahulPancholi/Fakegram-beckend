@@ -71,7 +71,7 @@ router.delete("/delete/post/:id", Authuser, async (req, res) => {
     if (!tobedlt) {
       res.json("post not found");
     } else {
-      if (tobedlt.owner.toString() === req.user._id.toString()) {
+      if (tobedlt.ownerid.toString() === req.user._id.toString()) {
         await tobedlt.remove();
 
         const user = await User.findById(req.user._id);
