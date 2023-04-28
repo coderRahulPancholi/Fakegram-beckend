@@ -6,14 +6,20 @@ const jwt = require("jsonwebtoken");
 
 router.post("/register", async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    const isexist = await User.findOne({ email: email }).select("+password");
+    const { name,username, email, password } = req.body;
+    if(!name || !username || !email || !password){
+      res.status(401).json("Please enter data")
+
+    }else{
+
+    
+    const isexist = await User.findOne({ email: email }).select("+password") || await User.findOne({ username: username }).select("+password") 
     if (isexist) {
-      res.send("already regiterd");
+      res.status(404).send("User Already Regiterd");
     } else {
       const salt = await bcrypt.genSalt(10);
       const securepass = await bcrypt.hash(password, salt);
-      const newuser = new User({ name, email, password: securepass });
+      const newuser = new User({ name,username, email ,password: securepass });
       await newuser.save();
 
       const token = jwt.sign({ id: newuser._id }, process.env.JWT_SECREAT);
@@ -24,8 +30,10 @@ router.post("/register", async (req, res) => {
         secure:true,
         sameSite:"none"
       })
-      .json({ sucess: true });
+      .json({ sucess: true,user:newuser });
     }
+  
+  }
   } catch (e) {
     res.status(401).send(e);
   }

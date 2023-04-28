@@ -6,6 +6,10 @@ const UserSchema = new Schema({
     type: String,
     require: true,
   },
+  username: {
+    type: String,
+    require: true,
+  },
   email: {
     type: String,
     require: true,
@@ -20,7 +24,7 @@ const UserSchema = new Schema({
     type: String,
     default: Date.now,
   },
-  follwers: [
+  followers: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

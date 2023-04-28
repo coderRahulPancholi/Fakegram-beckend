@@ -42,7 +42,7 @@ router.post("/deletemyaccount", Authuser, async (req, res) => {
 });
 
 router.get("/data", Authuser, async (req, res) => {
-  res.json({success:true,user:req.user}).header("Access-Control-Allow-Origin","*");
+  res.json({success:true,user:req.user});
 });
 
 router.get("/allusers/q=:query", Authuser, async(req,res)=>{
@@ -55,11 +55,31 @@ router.get("/allusers/q=:query", Authuser, async(req,res)=>{
       .toLowerCase()
       .includes(req.params.query.toLowerCase());
   })
-    res.json({users:filtered}).header("Access-Control-Allow-Origin","*")
+    res.json({users:filtered})
   } catch (error) {
     res.json("error")
   }
 
 })
+router.get("/spacificuser/:userid",  async(req,res)=>{
+  try {
+    
+    const user = await User.findOne({_id:req.params.userid})
+    if(!user){
+      res.status(404).json("No User Found")
+ 
+    }else{
+      res.json({user})
+      
+    }
+ 
+  } catch (error) {
+    res.json("error")
+  }
+
+})
+
+
+
 
 module.exports = router;

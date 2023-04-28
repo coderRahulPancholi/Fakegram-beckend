@@ -9,7 +9,7 @@ router.post("/createpost", Authuser, async (req, res) => {
   try {
     const { caption } = req.body;
 
-    const post = await Posts.create({ caption, owner: req.user._id,ownerusername:req.user.name });
+    const post = await Posts.create({ caption, ownerid: req.user._id,ownerusername:req.user.username,ownername:req.user.name });
 
     const user = await User.findById(req.user._id);
 
@@ -17,7 +17,7 @@ router.post("/createpost", Authuser, async (req, res) => {
 
     await user.save();
 
-    res.json(post).header("Access-Control-Allow-Origin","*");
+    res.json(post);
   } catch {
     res.json("error");
   }
@@ -25,11 +25,15 @@ router.post("/createpost", Authuser, async (req, res) => {
 
 router.get("/posts", Authuser, async (req, res) => {
   try {
-    const posts = await Posts.find({ owner: req.user._id });
+    const posts = await Posts.find({ ownerid: req.user._id });
     if (!posts) {
       res.status(404).json("no postes added");
     } else {
-      res.json({posts}).header("Access-Control-Allow-Origin","*");
+      res.json({posts:posts.sort(function (a, b) {
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+        return new Date(b.postedon) - new Date(a.postedon);
+      })});
     }
   } catch (error) {
     res.status(504).json(error);
@@ -39,6 +43,7 @@ router.get("/posts", Authuser, async (req, res) => {
 router.post("/like/:postid", Authuser, async (req, res) => {
   try {
     const tobelike = await Posts.findById(req.params.postid);
+
     if (!tobelike) {
       res.json("no post found");
     } else {
@@ -51,7 +56,7 @@ router.post("/like/:postid", Authuser, async (req, res) => {
       } else {
         tobelike.likes.push(req.user._id);
         await tobelike.save();
-        res.json("Liked").header("Access-Control-Allow-Origin","*");
+        res.json("Liked");
       }
     }
   } catch (error) {
@@ -76,7 +81,7 @@ router.delete("/delete/post/:id", Authuser, async (req, res) => {
           user.posts.splice(index, 1);
           await user.save();
         }
-        res.json("post dlted").header("Access-Control-Allow-Origin","*");
+        res.json("post dlted");
       } else {
         res.json("not allowed");
       }
@@ -90,7 +95,7 @@ router.get("/following/posts", Authuser, async(req,res)=>{
   try {
   const user = await User.findById(req.user._id);
   const postesoffollowing = await Posts.find({
-    owner:{
+    ownerid:{
       $in:user.following
     }
   })
@@ -100,7 +105,7 @@ router.get("/following/posts", Authuser, async(req,res)=>{
     return new Date(b.postedon) - new Date(a.postedon);
   })
    
-res.json({letestposts}).header("Access-Control-Allow-Origin","*")
+res.json({letestposts})
     
 
   } catch (error) {

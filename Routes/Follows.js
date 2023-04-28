@@ -9,9 +9,9 @@ router.post("/follow/:userid", Authuser, async (req, res) => {
     const user = await User.findById(req.user._id);
 
     if (tofollow) {
-      if (tofollow.follwers.includes(req.user._id)) {
-        const index = tofollow.follwers.indexOf(req.user._id);
-        tofollow.follwers.splice(index, 1);
+      if (tofollow.followers.includes(req.user._id)) {
+        const index = tofollow.followers.indexOf(req.user._id);
+        tofollow.followers.splice(index, 1);
         await tofollow.save();
 
         if (user.following.includes(req.params.userid)) {
@@ -23,7 +23,7 @@ router.post("/follow/:userid", Authuser, async (req, res) => {
 
         res.json("unfollowed");
       } else {
-        tofollow.follwers.push(req.user._id);
+        tofollow.followers.push(req.user._id);
 
         if (!user.following.includes(req.params.userid)) {
           user.following.push(req.params.userid);

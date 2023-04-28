@@ -2,10 +2,15 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const PostSchema = new Schema({
-    owner:{
+    ownerid:{
         type: mongoose.Schema.Types.ObjectId,
         ref:"User",
         require:true
+    },
+    ownername:{
+        type: String,
+        require:true
+
     },
     ownerusername:{
         type: String,
