@@ -17,6 +17,11 @@ require("./DB/MongoDb")
 
 app.use(express.json());
 // app.use(cors())
+// app.use(cors({
+//   credentials:true,
+//   origin:"http://localhost:3000"
+  
+// }))
 app.use(cors({
   credentials:true,
   origin:"https://fakegrammern.netlify.app"
@@ -33,6 +38,7 @@ app.use('/',Singup);
 app.use('/user', require("./Routes/Getuser"));
 app.use('/user', require("./Routes/Follows"));
 app.use('/user', require("./Routes/Postes"));
+app.use('/user', require("./Routes/Update"));
 
 
 

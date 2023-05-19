@@ -2,6 +2,9 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const UserSchema = new Schema({
+  profileUrl:{
+    type: String,
+  },
   name: {
     type: String,
     require: true,
@@ -15,6 +18,22 @@ const UserSchema = new Schema({
     require: true,
     unique: true,
   },
+  bio:{
+    type:String
+  },
+  dob:{
+    type:String
+  },
+  city:{
+    type:String
+  },
+  num:{
+    type:String
+  },
+  state:{
+    type:String
+  },
+
   password: {
     type: String,
     require: true,
@@ -27,20 +46,20 @@ const UserSchema = new Schema({
   followers: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Users",
     }
   ],
   posts: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Post",
+      ref: "Posts",
     }
   ],
 
   following: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Users",
     }
   ],
 });

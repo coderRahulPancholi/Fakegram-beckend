@@ -42,7 +42,8 @@ router.post("/deletemyaccount", Authuser, async (req, res) => {
 });
 
 router.get("/data", Authuser, async (req, res) => {
-  res.json({success:true,user:req.user});
+  const user = await User.findById(req.user._id).populate("followers following","name _id username profileUrl")
+  res.json({success:true,user:user});
 });
 
 router.get("/allusers/q=:query", Authuser, async(req,res)=>{
@@ -54,7 +55,7 @@ router.get("/allusers/q=:query", Authuser, async(req,res)=>{
       .join("")
       .toLowerCase()
       .includes(req.params.query.toLowerCase());
-  })
+  }) 
     res.json({users:filtered})
   } catch (error) {
     res.json("error")
@@ -64,12 +65,47 @@ router.get("/allusers/q=:query", Authuser, async(req,res)=>{
 router.get("/spacificuser/:userid",  async(req,res)=>{
   try {
     
-    const user = await User.findOne({_id:req.params.userid})
+    const user = await User.findOne({_id:req.params.userid}).populate("followers following posts", "name username _id caption likes comments imageUrl")
     if(!user){
       res.status(404).json("No User Found")
  
     }else{
       res.json({user})
+      
+    }
+ 
+  } catch (error) {
+    res.json("error")
+  }
+
+})
+
+router.get("/followers/:userid",  async(req,res)=>{
+  try {
+    
+    const user = await User.findOne({_id:req.params.userid}).select("followers").populate("followers", "name username _id profileUrl")
+    if(!user){
+      res.status(404).json("No User Found")
+ 
+    }else{
+      res.json({followers:user.followers})
+      
+    }
+ 
+  } catch (error) {
+    res.json("error")
+  }
+
+})
+router.get("/followings/:userid",  async(req,res)=>{
+  try {
+    
+    const user = await User.findOne({_id:req.params.userid}).select("following").populate("following", "name username _id profileUrl")
+    if(!user){
+      res.status(404).json("No User Found")
+ 
+    }else{
+      res.json({followings:user.following})
       
     }
  

@@ -4,8 +4,11 @@ const { Schema } = mongoose;
 const PostSchema = new Schema({
     ownerid:{
         type: mongoose.Schema.Types.ObjectId,
-        ref:"User",
+        ref:"Users",
         require:true
+    },
+    imageUrl:{
+        type: String,
     },
     ownername:{
         type: String,
@@ -29,21 +32,45 @@ const PostSchema = new Schema({
     likes:[
         {
             type: mongoose.Schema.Types.ObjectId,
-             ref:"User"
+             ref:"Users"
             
         }
     ],
     comments:[
         {
-           user:{
+           username:{
+            type: String,
+            require:true
+           },
+          
+           userid:{
             type: mongoose.Schema.Types.ObjectId,
-            ref:"User"
+            ref:"Users"
 
            },
            comment:{
             type:String,
             require:true
-           }
+           },
+           replies:[
+            {
+                username:{
+                    type: String,
+                    require:true
+                  
+                   },
+                   userid:{
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref:"Users"
+        
+                   },
+                   reply:{
+                    type:String,
+                    require:true
+                   },
+
+            }
+           ]
 
             
         }
