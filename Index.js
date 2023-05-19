@@ -24,7 +24,8 @@ app.use(express.json());
 // }))
 app.use(cors({
   credentials:true,
-  origin:"https://fakegrammern.netlify.app"
+  origin:"https://fakegrammern.netlify.app",
+  
   
 }))
 app.use(cookieParser())
