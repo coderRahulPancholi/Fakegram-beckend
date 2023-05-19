@@ -25,7 +25,6 @@ router.post("/createpost", Authuser, singleUpload, async (req, res) => {
     // console.log(fileuri)
     const cdata = await cloudinary.uploader.upload(fileuri.content, {
       width: 500,
-      height: 500,
       sign_url: true,
       public_id: file.originalname,
     });
