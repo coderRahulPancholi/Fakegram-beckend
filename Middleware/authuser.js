@@ -15,7 +15,7 @@ const Authuser = async (req,res,next)=>{
             if(!verifiedtoken){
                 res.json("not a vaild token")
             }else{
-                const rootuser = await User.findById({_id:verifiedtoken.id})
+                const rootuser = await User.findById(verifiedtoken.id)
 
                req.user = rootuser
 
