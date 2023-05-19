@@ -6,7 +6,7 @@ const cors = require("cors")
 const app = express();
 const port = process.env.PORT || 8000
 const Singup = require("./Routes/Singup");
-const Authuser = require('./Middleware/authuser');
+// const Authuser = require('./Middleware/authuser');
 const cookieParser = require("cookie-parser")
 
 

@@ -170,13 +170,13 @@ router.get("/following/posts", Authuser, async (req, res) => {
       ownerid: {
         $in: user.following,
       },
-    }).populate("likes ownerid ", "name username _id profileUrl ");
-    const letestposts = postesoffollowing.sort(function (a, b) {
-      // Turn your strings into dates, and then subtract them
-      // to get a value that is either negative, positive, or zero.
-      return new Date(b.postedon) - new Date(a.postedon);
-    });
-
+    }).populate("likes ownerid", "name username _id profileUrl ");
+    const letestposts = postesoffollowing.reverse()
+    // const letestposts = postesoffollowing.sort(function (a, b) {
+    //   // Turn your strings into dates, and then subtract them
+    //   // to get a value that is either negative, positive, or zero.
+    //   return new Date(b.postedon) - new Date(a.postedon);
+    // });
     res.json({ letestposts });
   } catch (error) {
     res.status(504).json(error);
