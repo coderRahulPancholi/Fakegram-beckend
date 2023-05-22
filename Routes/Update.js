@@ -58,8 +58,8 @@ router.post("/upload/userprofile",Authuser,singleUpload,async(req,res)=>{
 if(file){
 const fileuri =  getDataUri(file)
 // console.log(fileuri)
-const cdata = await cloudinary.uploader.upload(fileuri.content,{  width: 250, height: 250,
-sign_url: true,public_id:file.originalname, })
+const cdata = await cloudinary.uploader.upload(fileuri.content,{gravity: "face", width: 300, height: 300, radius: "max", crop: "fill",  
+sign_url: true,public_id:file.originalname,folder:"UsersProfiles" ,})
 
    user.profileUrl= cdata.secure_url
 

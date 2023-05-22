@@ -42,7 +42,7 @@ router.post("/deletemyaccount", Authuser, async (req, res) => {
 });
 
 router.get("/data", Authuser, async (req, res) => {
-  const user = await User.findById(req.user._id).populate("followers following","name _id username profileUrl")
+  const user = await User.findById(req.user._id)
   res.json({success:true,user:user});
 });
 

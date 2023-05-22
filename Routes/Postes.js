@@ -27,6 +27,7 @@ router.post("/createpost", Authuser, singleUpload, async (req, res) => {
       width: 500,
       sign_url: true,
       public_id: file.originalname,
+      folder:"UserPosts"
     });
 
     const post = await Posts.create({

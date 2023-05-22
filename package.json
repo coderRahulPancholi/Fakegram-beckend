@@ -1,4 +1,11 @@
 {
+  "name":"SERVER",
+"main":"Index.js",
+
+"scripts":{
+  "start":"node Index.js"
+
+},
   
   "dependencies": {
   

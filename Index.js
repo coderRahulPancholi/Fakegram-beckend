@@ -22,6 +22,7 @@ app.use(express.json());
 //   origin:"http://localhost:3000"
   
 // }))
+
 app.use(cors({
   credentials:true,
   origin:"https://fakegrammern.netlify.app",
