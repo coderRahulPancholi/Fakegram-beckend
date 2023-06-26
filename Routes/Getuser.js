@@ -42,8 +42,13 @@ router.post("/deletemyaccount", Authuser, async (req, res) => {
 });
 
 router.get("/data", Authuser, async (req, res) => {
-  const user = await User.findById(req.user._id)
-  res.json({success:true,user:user});
+  try {
+    const user = await User.findById(req.user._id)
+    res.json({success:true,user:user});
+    
+  } catch (error) {
+    res.json(error)
+  }
 });
 
 router.get("/allusers/q=:query", Authuser, async(req,res)=>{
@@ -58,7 +63,7 @@ router.get("/allusers/q=:query", Authuser, async(req,res)=>{
   }) 
     res.json({users:filtered})
   } catch (error) {
-    res.json("error")
+    res.json("internal")
   }
 
 })

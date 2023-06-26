@@ -21,30 +21,51 @@ router.post("/createpost", Authuser, singleUpload, async (req, res) => {
     const { caption } = req.body;
     const file = req.file;
 
-    const fileuri = getDataUri(file);
-    // console.log(fileuri)
-    const cdata = await cloudinary.uploader.upload(fileuri.content, {
-      width: 500,
-      sign_url: true,
-      public_id: file.originalname,
-      folder:"UserPosts"
-    });
+    if (!file && !caption) {
+      res.json({ messege: "Please Enter Vaild Data" });
+    } else {
+      if (file) {
+        const fileuri = getDataUri(file);
+        // console.log(fileuri)
+        const cdata = await cloudinary.uploader.upload(fileuri.content, {
+          width: 500,
+          sign_url: true,
+          public_id: file.originalname,
+          folder: "UserPosts",
+        });
 
-    const post = await Posts.create({
-      caption,
-      ownerid: req.user._id,
-      ownerusername: req.user.username,
-      ownername: req.user.name,
-      imageUrl: cdata.secure_url,
-    });
+        const post = await Posts.create({
+          caption,
+          ownerid: req.user._id,
+          ownerusername: req.user.username,
+          ownername: req.user.name,
+          imageUrl: cdata.secure_url,
+        });
 
-    const user = await User.findById(req.user._id);
+        const user = await User.findById(req.user._id);
 
-    user.posts.push(post._id);
+        user.posts.push(post._id);
 
-    await user.save();
+        await user.save();
 
-    res.json({ post });
+        res.json({ post });
+      } else {
+        const post = await Posts.create({
+          caption,
+          ownerid: req.user._id,
+          ownerusername: req.user.username,
+          ownername: req.user.name,
+        });
+
+        const user = await User.findById(req.user._id);
+
+        user.posts.push(post._id);
+
+        await user.save();
+
+        res.json({ post });
+      }
+    }
   } catch {
     res.status(500).json("error");
   }
@@ -84,12 +105,15 @@ router.get("/posts", Authuser, async (req, res) => {
     if (!posts) {
       res.status(404).json("no postes added");
     } else {
+      // res.json({
+      //   posts: posts.sort(function (a, b) {
+      //     // Turn your strings into dates, and then subtract them
+      //     // to get a value that is either negative, positive, or zero.
+      //     return new Date(b.postedon) - new Date(a.postedon);
+      //   }),
+      // });
       res.json({
-        posts: posts.sort(function (a, b) {
-          // Turn your strings into dates, and then subtract them
-          // to get a value that is either negative, positive, or zero.
-          return new Date(b.postedon) - new Date(a.postedon);
-        }),
+        posts: posts.reverse()
       });
     }
   } catch (error) {
@@ -135,6 +159,20 @@ router.post("/like/:postid", Authuser, async (req, res) => {
     res.json("error");
   }
 });
+router.get("/likesBy/:postid", Authuser, async (req, res) => {
+  try {
+    const likers = await Posts.findById(req.params.postid)
+      .select("likes")
+      .populate("likes", "name username _id profileUrl");
+    if (!likers) {
+      res.json("No data found");
+    } else {
+      res.json(likers);
+    }
+  } catch (error) {
+    res.json("error");
+  }
+});
 
 router.delete("/delete/post/:id", Authuser, async (req, res) => {
   try {
@@ -171,7 +209,7 @@ router.get("/following/posts", Authuser, async (req, res) => {
         $in: user.following,
       },
     }).populate("likes ownerid", "name username _id profileUrl ");
-    const letestposts = postesoffollowing.reverse()
+    const letestposts = postesoffollowing.reverse();
     // const letestposts = postesoffollowing.sort(function (a, b) {
     //   // Turn your strings into dates, and then subtract them
     //   // to get a value that is either negative, positive, or zero.

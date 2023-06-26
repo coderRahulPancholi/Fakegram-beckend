@@ -62,7 +62,15 @@ const UserSchema = new Schema({
       ref: "Users",
     }
   ],
+  verified:{
+    type:Boolean,
+    default:false
+  },
+  otp:Number,
+  otp_expiry:Date,
 });
+
+UserSchema.index({otp_expiry:1},{expireAfterSeconds:0})
 
 const User = mongoose.model("Users", UserSchema);
 
