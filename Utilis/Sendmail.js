@@ -16,12 +16,19 @@ const sendMail = async (email, subject, text) => {
       },
     });
 
+    const html =  `  
+    <h3>FakeGram</h3>
+    <p>Verify your accout Use Code</p>
+    <h1>${text}</h1>
+    `
+    
+
   
   transport.sendMail({
     from:process.env.Username,
     to:email,
     subject,
-    text
+   html
   })
  
 

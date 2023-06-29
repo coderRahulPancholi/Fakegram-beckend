@@ -40,6 +40,7 @@ router.post("/createpost", Authuser, singleUpload, async (req, res) => {
           ownerusername: req.user.username,
           ownername: req.user.name,
           imageUrl: cdata.secure_url,
+          public_id:cdata.public_id
         });
 
         const user = await User.findById(req.user._id);
@@ -182,6 +183,7 @@ router.delete("/delete/post/:id", Authuser, async (req, res) => {
       res.json("post not found");
     } else {
       if (tobedlt.ownerid.toString() === req.user._id.toString()) {
+        await cloudinary.uploader.destroy(tobedlt.public_id)
         await tobedlt.remove();
 
         const user = await User.findById(req.user._id);

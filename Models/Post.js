@@ -10,6 +10,9 @@ const PostSchema = new Schema({
     imageUrl:{
         type: String,
     },
+    public_id:{
+        type: String,
+    },
     ownername:{
         type: String,
         require:true

@@ -53,17 +53,36 @@ router.get("/data", Authuser, async (req, res) => {
 
 router.get("/allusers/q=:query", Authuser, async(req,res)=>{
   try {
-    
-    const users = await User.find()
-    const filtered = users.filter((e)=>{
-      return Object.values(e.name.toLowerCase())
-      .join("")
-      .toLowerCase()
-      .includes(req.params.query.toLowerCase());
-  }) 
-    res.json({users:filtered})
+  // const query ={}
+
+  //  query.name={$regex:req.params.query,$options:"i"}
+    const users = await User.find({
+      
+      "$or":[
+        { "name":{$regex: req.params.query,$options:"i"}},
+        { "username":{$regex: req.params.query,$options:"i"}}
+      ]
+      
+      
+    }).sort("-name")
+ 
+// const users = await User.find(query)
+  //   const filtered = users.filter((e)=>{
+  //     return e.name.toLowerCase() == req.params.query.toLowerCase()
+  // }) 
+  // const filters = req.params.query;
+  // const filteredUsers = users.filter((user) => {
+  //   let isValid = true;
+  //   for (key in filters) {
+  //     console.log(key, user[this.name], filters[key]);
+  //     isValid = isValid && user[key] == filters[key];
+  //   }
+  //   return isValid;
+  // });
+    res.json({users:users})
+
   } catch (error) {
-    res.json("internal")
+    res.status(504).json("internal")
   }
 
 })
@@ -117,6 +136,38 @@ router.get("/followings/:userid",  async(req,res)=>{
   } catch (error) {
     res.json("error")
   }
+
+})
+
+router.get("/suggestedusers",Authuser, async(req,res)=>{
+ try {
+  const users = await User.find({
+    "$or":[
+      {name:{$regex:req.user.name,$options:"i"}},
+      
+      {city:{$in:req.user.city}},
+      {state:{$in:req.user.state}},
+      {username:{$regex:req.user.username,$options:"i"}},
+    ]
+  }).select("name")
+
+  res.json({users})
+  
+ } catch (error) {
+  res.status(504).json(error)
+ }
+
+})
+router.get("/topusers",Authuser, async(req,res)=>{
+ try {
+  const users = await User.find()
+
+
+  res.json({users})
+  
+ } catch (error) {
+  res.status(504).json(error)
+ }
 
 })
 

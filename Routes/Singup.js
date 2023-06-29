@@ -43,7 +43,7 @@ router.post("/sendotp", async (req, res) => {
       await sendMail(
         email,
         `Email Verification Code: ${otp}`,
-        `Verify your mail id on fakegram use ${otp} as your otp. It will exprie after 15 minutes.`
+        `${otp} `
       );
       const user = await User.create({
         email,
@@ -51,13 +51,14 @@ router.post("/sendotp", async (req, res) => {
         name,
         password:securepass,
         otp,
-        otp_expiry: Date.now() + 10 * 60 * 1000,
+        otp_expiry: new Date (Date.now() + 10 * 60 * 1000),
       });
 
       res.json({ sucess: true, messeage: `Otp Sent To ${email}` });
     }
   } catch (error) {}
 });
+
 
 
 
@@ -95,43 +96,95 @@ router.post("/verifymail", async (req, res) => {
   }
 });
 
-router.post("/register", async (req, res) => {
-  try {
-    const { name, username, email, password } = req.body;
-    if (!name || !username || !email || !password) {
-      res.status(401).json("Please enter data");
-    } else {
-      const isexist =
-        (await User.findOne({ email: email }).select("+password")) ||
-        (await User.findOne({ username: username }).select("+password"));
-      if (isexist) {
-        res.status(404).send("User Already Regiterd");
-      } else {
-        const salt = await bcrypt.genSalt(10);
-        const securepass = await bcrypt.hash(password, salt);
-        const newuser = new User({
-          name,
-          username,
-          email,
-          password: securepass,
-        });
-        await newuser.save();
 
-        const token = jwt.sign({ id: newuser._id }, process.env.JWT_SECREAT);
-        res
-          .cookie("token", token, {
-            expires: new Date(Date.now() + 24657987654687),
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-          })
-          .json({ sucess: true, user: newuser });
-      }
+router.post("/resendotp",async(req,res)=>{
+  try {
+    const {email} = req.body
+    const user = await User.findOne({email})
+    if(!user){
+      res.status(500).json({messeage:"Register Again"})
     }
-  } catch (e) {
-    res.status(401).send(e);
+    if(user && !user.verified){
+      const otp = Math.floor(Math.random() * 1000000);
+
+      user.otp=otp
+      user.otp_expiry =new Date (Date.now() + 10 * 60 * 1000)
+      await user.save()
+      await sendMail(
+        email,
+        `Email Verification Code: ${otp}`,
+        `${otp} `
+      );
+res.json({messeage:"Otp Resend Successfully"})
+    }
+    
+  } catch (error) {
+    res.status(500).json({messeage:"Internal Error"})
   }
-});
+})
+
+router.post("/checkusername",async(req,res)=>{
+  try {
+    const {username}= req.body
+    const isexist = await User.findOne({username})
+    if(isexist){
+      return res.json({sucess:false,messeage: "Username Already Taken "})
+    }
+   return res.json({sucess:true})
+  } catch (error) {
+    
+  }
+})
+router.post("/checkemail",async(req,res)=>{
+  try {
+    const {email}= req.body
+    const isexist = await User.findOne({email})
+    if(isexist && isexist.verified){
+      return res.json({sucess:false,messeage: "Email Already Registred "})
+    }
+   return res.json({sucess:true})
+  } catch (error) {
+    
+  }
+})
+
+// router.post("/register", async (req, res) => {
+//   try {
+//     const { name, username, email, password } = req.body;
+//     if (!name || !username || !email || !password) {
+//       res.status(401).json("Please enter data");
+//     } else {
+//       const isexist =
+//         (await User.findOne({ email: email }).select("+password")) ||
+//         (await User.findOne({ username: username }).select("+password"));
+//       if (isexist) {
+//         res.status(404).send("User Already Regiterd");
+//       } else {
+//         const salt = await bcrypt.genSalt(10);
+//         const securepass = await bcrypt.hash(password, salt);
+//         const newuser = new User({
+//           name,
+//           username,
+//           email,
+//           password: securepass,
+//         });
+//         await newuser.save();
+
+//         const token = jwt.sign({ id: newuser._id }, process.env.JWT_SECREAT);
+//         res
+//           .cookie("token", token, {
+//             expires: new Date(Date.now() + 24657987654687),
+//             httpOnly: true,
+//             secure: true,
+//             sameSite: "none",
+//           })
+//           .json({ sucess: true, user: newuser });
+//       }
+//     }
+//   } catch (e) {
+//     res.status(401).send(e);
+//   }
+// });
 
 router.post("/login", async (req, res) => {
   try {
