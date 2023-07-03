@@ -43,7 +43,7 @@ router.post("/sendotp", async (req, res) => {
       await sendMail(
         email,
         `Email Verification Code: ${otp}`,
-        `${otp} `
+        otp
       );
       const user = await User.create({
         email,
@@ -66,6 +66,10 @@ router.post("/verifymail", async (req, res) => {
   try {
     const { otp, email } = req.body;
     const user = await User.findOne({ email });
+
+    if(!user){
+      return res.status(408).json({ sucess: false, messeage: "Request Time Out" });
+    }
 
     if (user.verified) {
       return res.json({ sucess: false, messeage: "Account Already Verified" });
@@ -102,7 +106,7 @@ router.post("/resendotp",async(req,res)=>{
     const {email} = req.body
     const user = await User.findOne({email})
     if(!user){
-      res.status(500).json({messeage:"Register Again"})
+     return res.status(408).json({messeage:"Request Timeout"})
     }
     if(user && !user.verified){
       const otp = Math.floor(Math.random() * 1000000);
@@ -113,9 +117,9 @@ router.post("/resendotp",async(req,res)=>{
       await sendMail(
         email,
         `Email Verification Code: ${otp}`,
-        `${otp} `
+        otp
       );
-res.json({messeage:"Otp Resend Successfully"})
+      res.json({messeage:"Otp Resend Successfully"})
     }
     
   } catch (error) {
@@ -138,11 +142,12 @@ router.post("/checkusername",async(req,res)=>{
 router.post("/checkemail",async(req,res)=>{
   try {
     const {email}= req.body
+   
     const isexist = await User.findOne({email})
     if(isexist && isexist.verified){
       return res.json({sucess:false,messeage: "Email Already Registred "})
     }
-   return res.json({sucess:true})
+    res.json({sucess:true})
   } catch (error) {
     
   }

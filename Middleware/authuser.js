@@ -13,9 +13,12 @@ const Authuser = async (req,res,next)=>{
         }else{
             const verifiedtoken = jwt.verify(token,process.env.JWT_SECREAT)
             if(!verifiedtoken){
-                res.json("not a vaild token")
+               return res.json("not a vaild token")
             }else{
                 const rootuser = await User.findById(verifiedtoken.id)
+                if(!rootuser){
+                    return res.status(408).json("No User Found")
+                }
 
                req.user = rootuser
 

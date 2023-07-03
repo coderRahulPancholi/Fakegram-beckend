@@ -17,18 +17,18 @@ require("./DB/MongoDb")
 
 app.use(express.json());
 
-// app.use(cors({
-//   credentials:true,
-//   origin:"http://localhost:3000"
-  
-// }))
-
 app.use(cors({
   credentials:true,
-  origin:"https://fakegrammern.netlify.app",
-  
+  origin:"http://localhost:3000"
   
 }))
+
+// app.use(cors({
+//   credentials:true,
+//   origin:"https://fakegrammern.netlify.app",
+  
+  
+// }))
 app.use(cookieParser())
 
 

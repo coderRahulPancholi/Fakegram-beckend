@@ -1,8 +1,9 @@
 {
-  "name": "SERVER",
+  "name": "FakeGram_api",
   "main": "Index.js",
   "scripts": {
-    "start": "node Index.js"
+    "start": "node Index.js",
+    "dev":"nodemon Index.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
