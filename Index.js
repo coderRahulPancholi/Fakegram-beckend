@@ -36,9 +36,7 @@ app.use(cookieParser())
 
 
 
-app.use('/',(req,res)=>{
-  res.json("working")
-});
+
 app.use('/',Singup);
 app.use('/user', require("./Routes/Getuser"));
 app.use('/user', require("./Routes/Follows"));
