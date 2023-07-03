@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const db = process.env.MONGO_DATA
+const db = process.env.MONGO_DATAurl
 mongoose.set('strictQuery', false);
 
 mongoose.connect(db,{
